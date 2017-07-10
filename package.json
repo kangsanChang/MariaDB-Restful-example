@@ -14,5 +14,13 @@
     "express": "^4.15.3",
     "mysql2": "^1.3.5",
     "sequelize": "^4.3.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kangsanChang/MariaDB-Restful-example.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kangsanChang/MariaDB-Restful-example/issues"
+  },
+  "homepage": "https://github.com/kangsanChang/MariaDB-Restful-example#readme"
 }

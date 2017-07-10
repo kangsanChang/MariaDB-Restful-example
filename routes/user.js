@@ -1,6 +1,6 @@
-var express = require('express');
-var models = require('../models');
-var router = express.Router();
+const express = require('express');
+const models = require('../models');
+const router = express.Router();
 
 // Find all user
 router.get('/', (req, res, next) => {
@@ -24,4 +24,29 @@ router.post('/', (req,res)=>{
      });
 });
 
+// Find One user
+router.get('/:id', (req,res)=>{
+  models.User.findOne({where: {userID: req.params.id}}).then((user)=>{
+    if(user==null){
+      res.json("Cannot find ", req.params.id); // 안되는듯..
+    }
+    res.json(user);
+  }).catch(err => {
+    console.error(err);
+  });
+});
+
+// Update One User
+router.put('/:id', (req,res)=>{
+  models.User.update({password : req.body.password},{where: {userID: req.params.id}}).then((user)=>{
+    res.json(user);
+  });
+});
 module.exports = router;
+
+// Delete One User
+router.delete('/:id', (req,res)=>{
+  models.User.destroy({where: {userID: req.params.id}}).then((user)=>{
+    res.json(req.params.id+" is removed");
+  });
+});
