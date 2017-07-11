@@ -1,6 +1,7 @@
-const express = require('express');
-const models = require('../models');
-const router = express.Router();
+var express = require('express');
+var models = require('../models');
+var bcrypt = require('bcrypt');
+var router = express.Router();
 
 // Find all user
 router.get('/', (req, res, next) => {
@@ -14,14 +15,16 @@ router.get('/', (req, res, next) => {
   
 // Create user
 router.post('/', (req,res)=>{
+  bcrypt.hash(req.body.password, 10).then((hash)=>{
     models.User.create({
         userID: req.body.userID,
-        password: req.body.password
+        password: hash
      }).then(result=>{
         res.json(result);
      }).catch(err => {
         console.error(err);
      });
+  });
 });
 
 // Find One user
@@ -37,9 +40,21 @@ router.get('/:id', (req,res)=>{
 });
 
 // Update One User
+// if password_now === user password : update password to password_new
+// if not, don't modify
 router.put('/:id', (req,res)=>{
-  models.User.update({password : req.body.password},{where: {userID: req.params.id}}).then((user)=>{
-    res.json(user);
+  bcrypt.compare(req.body.password_now, 10).then((hash)=>{
+    models.User.findOne({where: {userID: req.params.id}}).then((user)=>{
+      if(hash===user.password){
+        console.log("same password! \n" + "hash : ", hash + "\n password hash: ", user.password);
+        models.User.update({password : req.body.password_new},{where: {userID: req.params.id}})
+        .then((user)=>{res.json(user);});
+      }else{
+        console.log("wrong password! \n" + "hash : ", hash + "\n password hash: ", user.password);
+      }
+    });
+  }).catch(err => {
+    console.error(err);
   });
 });
 module.exports = router;
