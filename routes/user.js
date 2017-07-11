@@ -43,17 +43,21 @@ router.get('/:id', (req,res)=>{
 // if password_now === user password : update password to password_new
 // if not, don't modify
 router.put('/:id', (req,res)=>{
-  bcrypt.compare(req.body.password_now, 10).then((hash)=>{
-    models.User.findOne({where: {userID: req.params.id}}).then((user)=>{
-      if(hash===user.password){
-        console.log("same password! \n" + "hash : ", hash + "\n password hash: ", user.password);
-        models.User.update({password : req.body.password_new},{where: {userID: req.params.id}})
-        .then((user)=>{res.json(user);});
+  models.User.findOne({where: {userID: req.params.id}}).then((user)=>{
+    bcrypt.compare(req.body.password_now, user.password, (err, matched)=>{
+      if(matched){
+        console.log("same password! \n");
+        bcrypt.hash(req.body.password_new, 10).then((hash)=>{
+          models.User.update({password : hash},{where: {userID: req.params.id}})
+          .then((user)=>{res.json(user);});
+        });
       }else{
-        console.log("wrong password! \n" + "hash : ", hash + "\n password hash: ", user.password);
+        console.error(err);
+        res.json("wrong password!");
       }
     });
-  }).catch(err => {
+  }).catch(err =>{
+    console.log("Cannot find ",req.params.id);
     console.error(err);
   });
 });
@@ -61,7 +65,16 @@ module.exports = router;
 
 // Delete One User
 router.delete('/:id', (req,res)=>{
-  models.User.destroy({where: {userID: req.params.id}}).then((user)=>{
-    res.json(req.params.id+" is removed");
+  models.User.findOne({where: {userID: req.params.id}}).then((user)=>{
+    bcrypt.compare(req.body.password, user.password, (err, matched)=>{
+      if(matched){
+        models.User.destroy({where: {userID: req.params.id}}).then((user)=>{
+          res.json(req.params.id+" is removed");
+        });
+      }else{
+        console.error(err);
+        res.json("wrong password!");
+      }
+    });
   });
 });
