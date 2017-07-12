@@ -23,5 +23,13 @@
   "bugs": {
     "url": "https://github.com/kangsanChang/MariaDB-Restful-example/issues"
   },
-  "homepage": "https://github.com/kangsanChang/MariaDB-Restful-example#readme"
+  "homepage": "https://github.com/kangsanChang/MariaDB-Restful-example#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.2",
+    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0"
+  }
 }

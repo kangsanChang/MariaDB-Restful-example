@@ -1,8 +1,8 @@
 const user = require('./user');
 
-module.exports.routes = function(app) {
+module.exports.routes = (app) => {
   app.use('/user', user);
-  app.get('/', function(req, res) {
-    res.json("Success!");
+  app.get('/', (req, res) => {
+    res.json('Success!');
   });
 };
